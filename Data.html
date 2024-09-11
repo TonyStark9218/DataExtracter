@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJ URL Decoder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: block;
+            color: #4a4a4a;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            resize: vertical;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .result {
+            background-color: #f1f1f1;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-height: 100px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .copy-btn:hover {
+            background-color: #0056b3;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>URL Decoder</h1>
+        <label for="inputUrl">Enter Encoded URL</label>
+        <textarea id="inputUrl" rows="4" placeholder="Paste the encoded URL here..."></textarea>
+        <button class="btn" onclick="decodeUrl()">Decode URL</button>
+        
+        <label for="outputData">Decoded URL</label>
+        <div class="result" id="outputData">
+            <span id="decodedUrl">Your decoded URL will appear here...</span>
+            <button class="copy-btn" onclick="copyToClipboard()">Copy</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2024 URL Decoder | Designed By ♥AJ♥</p>
+    </div>
+
+    <script>
+        function decodeUrl() {
+            const inputUrl = document.getElementById('inputUrl').value.trim();
+            const outputDiv = document.getElementById('decodedUrl');
+
+            if (!inputUrl) {
+                outputDiv.textContent = 'Please enter a valid encoded URL.';
+                return;
+            }
+
+            try {
+                // Decode the entire URL
+                const decodedUrl = decodeURIComponent(inputUrl);
+                
+                // Extract the relevant part of the decoded URL from user= or query_id= till before &tgWebAppVersion=
+                const regex = /(user=.*?&|query_id=.*?&)[^&]*?(?=&tgWebAppVersion=)/;
+                const match = decodedUrl.match(regex);
+
+                if (match) {
+                    outputDiv.textContent = match[0];
+                } else {
+                    outputDiv.textContent = 'Specific part not found in the URL.';
+                }
+            } catch (error) {
+                outputDiv.textContent = 'Invalid encoded URL. Please check and try again.';
+                console.error(error);
+            }
+        }
+
+        function copyToClipboard() {
+            const decodedUrl = document.getElementById('decodedUrl').textContent;
+
+            if (decodedUrl === 'Your decoded URL will appear here...') {
+                alert('Nothing to copy!');
+                return;
+            }
+
+            // Create a temporary input element to copy the text
+            const tempInput = document.createElement('input');
+            tempInput.value = decodedUrl;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            alert('Decoded URL copied to clipboard!');
+        }
+    </script>
+</body>
+</html>
